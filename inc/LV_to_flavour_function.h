@@ -41,6 +41,7 @@ namespace LV {
     //neutrino constant
     double th13= 8.50*xDEG;
     double th23=42.30*xDEG;
+    // double th23=20.0*xDEG;
     double th12=33.48*xDEG;
     double dCP = 0.00*xDEG;
     double c2t=cos(2.0*th23);

@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 import os
+import mpmath as mp
 import numpy as np
 import argparse
 import lvsearchpy as lv
+
+mp.mp.dps = 55  # Computation precision is 55 digits
 
 class FullPaths(argparse.Action):
     """
@@ -17,15 +20,11 @@ if __name__ == '__main__':
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
 
-    parser.add_argument('-p', '--real', type=float, required=True,
-                        help='''Value of real parameter''')
+    parser.add_argument('--this', type=str, required=True,
+                        help='''Which parameter to scan a,t,c etc.''')
 
-    parser.add_argument('--min', type=float, required=True, help='''Min value''')
-
-    parser.add_argument('--max', type=float, required=True, help='''Max value''')
-
-    parser.add_argument('--n-points', type=int, required=True,
-                        help='''Number of points to sample''')
+    # parser.add_argument('--real', type=mp.mpf, required=True,
+    #                     help='''Value of real parameter''')
 
     parser.add_argument('--run', type=int, required=True, help='''Run ID''')
     args = parser.parse_args()
@@ -41,7 +40,12 @@ if __name__ == '__main__':
 
     # constructing object
     lvsearch = lv.LVSearch(effective_area_path,events_path,chris_flux_path,kaon_flux_path,pion_flux_path,prompt_flux_path)
-    lvsearch.SetEnergyExponent(2.)
+    if args.this == 'a':
+        lvsearch.SetEnergyExponent(0.)
+    elif args.this == 'c':
+        lvsearch.SetEnergyExponent(1.)
+    elif args.this == 't':
+        lvsearch.SetEnergyExponent(2.)
     lvsearch.SetVerbose(False)
 
     # #calculate likelihood from c++
@@ -69,22 +73,29 @@ if __name__ == '__main__':
     # should be ~1200
     # real = [-28,-28,-28]
     # [-23, -30]
-    imaginary = np.logspace(args.min, args.max, args.n_points)
-    imaginary = np.hstack((imaginary, -np.logspace(args.min, args.max, args.n_points)))
-
-    trace = imaginary
+    this = args.this
+    points = []
+    with open('/data/icecube/software/LVTools_package/LVTools/python/scan/numpy/'+this+'_'+str(args.run)+'.txt', 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            points.append([mp.mpf(x.strip()) for x in line.split(' ')])
+    points = np.array(points).T
+    re = points[0]
+    im = points[1]
+    tr = points[2]
 
     with open(output_file_path+str(args.run)+'.txt', 'w') as f:
-        for a in imaginary:
-            for b in trace:
-                p0_base = [np.power(10., args.real), a, b]
-                values = lvsearch.llh(p0_base)
-                np.savetxt(f, values[:-1], fmt='%s', newline=' ', delimiter=' ')
-                np.savetxt(f, p0_base, fmt='%s', newline=' ', delimiter=' ')
-                f.write(str(values[-1]) + '\n')
-
-                p0_base = [-np.power(10., args.real), a, b]
-                values = lvsearch.llh(p0_base)
-                np.savetxt(f, values[:-1], fmt='%s', newline=' ', delimiter=' ')
-                np.savetxt(f, p0_base, fmt='%s', newline=' ', delimiter=' ')
-                f.write(str(values[-1]) + '\n')
+        for c in xrange(len(re)):
+            # p0_base_hp = [args.real, a, b]
+            p0_base_hp = [re[c], im[c], tr[c]]
+            p0_base = map(float, p0_base_hp)
+            # any_zero = False
+            # for elem in p0_base:
+            #     if elem == 0:
+                    # any_zero = True
+            # if any_zero:
+                # continue
+            values = lvsearch.llh(p0_base)
+            np.savetxt(f, values[:-1], fmt='%s', newline=' ', delimiter=' ')
+            np.savetxt(f, p0_base_hp, fmt='%s', newline=' ', delimiter=' ')
+            f.write(str(values[-1]) + '\n')

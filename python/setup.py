@@ -3,18 +3,23 @@ from distutils.core import setup
 from distutils.extension import Extension
 import os.path
 import sys
+import numpy
 
 if sys.platform == 'win32' or sys.platform == 'win64':
     print 'Windows is not a supported platform.'
     quit()
 
 else:
-    include_dirs = ['/usr/local/Cellar/python/2.7.9/Frameworks/Python.framework/Versions/2.7/lib/python2.7/../../include/python2.7',
-                    '/Users/carguelles/Library/Python/2.7/lib/python/site-packages/numpy/core/include',
-                    '/usr/local/include',
+    include_dirs = ['/data/icecube/software/LVTools_package/anaconda/envs/lvtools/include/',
+                    '/data/icecube/software/LVTools_package/nuSQuIDS/include',
+                    '/data/icecube/software/LVTools_package/SQuIDS/include',
+                    '/data/icecube/software/dependencies/boost_1_61_0/include',
+                    '/data/icecube/software/dependencies/gsl-2.2/include',
+                    '/data/icecube/software/LVTools_package/PhysTools/include',
+                    numpy.get_include(),
                     '../inc/',
                     '.']
-    libraries = ['python2.7','boost_python',
+    libraries = ['python2.7','boost_python', 'PhysTools',
                  'SQuIDS','nuSQuIDS',
                  'gsl','gslcblas','m',
                  'hdf5','hdf5_hl','PhysTools']
@@ -22,14 +27,13 @@ else:
     if sys.platform.startswith('linux'):
       libraries.append('cxxrt')
 
-    library_dirs = ['/usr/local/Cellar/python/2.7.9/Frameworks/Python.framework/Versions/2.7/lib/python2.7',
-                    '/usr/local/Cellar/python/2.7.9/Frameworks/Python.framework/Versions/2.7/lib/python2.7/../',
-                    '/usr/local/lib',
-                    '/usr/local/lib',
-                    '/usr/local/Cellar/gsl/1.15/lib',
-                    '/usr/local/opt/szip/lib',
-                    '/usr/local/lib',
-                    '/usr/local/lib']
+    library_dirs = ['/data/icecube/software/LVTools_package/anaconda/envs/lvtools/lib',
+                    '/data/icecube/software/LVTools_package/nuSQuIDS/lib',
+                    '/data/icecube/software/LVTools_package/SQuIDS/lib',
+                    '/data/icecube/software/dependencies/boost_1_61_0/lib',
+                    '/data/icecube/software/LVTools_package/libcxxrt/build/lib',
+                    '/data/icecube/software/LVTools_package/PhysTools/lib',
+                    '/data/icecube/software/dependencies/gsl-2.2/lib',]
 
 files = ['lvsearchpy.cpp']
 

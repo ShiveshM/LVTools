@@ -1,0 +1,5 @@
+python/w.sh.*
+python/output_*
+python/build
+*.so
+*.o

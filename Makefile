@@ -1,19 +1,24 @@
 # Compiler
-CC=clang
-CXX=clang++
+CC=gcc
+CXX=g++
 AR=ar
-LD=clang++
+LD=g++
 
 DYN_SUFFIX=.dylib
 DYN_OPT=-dynamiclib -install_name $(LIBnuSQUIDS)/$(DYN_PRODUCT) -compatibility_version $(VERSION) -current_version $(VERSION)
 
 VERSION=1.0.0
-PREFIX=/usr/local
+PREFIX=/data/icecube/software/LVTools_paackage/LVTools/
 
 
 #PATH_nuSQUIDS=$(shell pwd)
-PATH_nuSQUIDS=/usr/local
-PATH_SQUIDS=$(SQUIDS_DIR)
+PATH_nuSQUIDS=${NUSQUIDS}
+PATH_SQUIDS=${SQUIDS}
+
+INCSQUIDS=$(SQUIDS)/include
+LIBSQUIDS=$(SQUIDS)/lib
+INCnuSQUIDS=$(NUSQUIDS)/include
+LIBnuSQUIDS=$(NUSQUIDS)/lib
 
 MAINS_SRC=$(wildcard mains/*.cpp)
 MAINS=$(patsubst mains/%.cpp,bin/%.exe,$(MAINS_SRC))
@@ -23,22 +28,20 @@ CXXFLAGS= -g -std=c++11 -I./inc
 
 # Directories
 
-GSL_CFLAGS=-I/usr/local/Cellar/gsl/1.16/include
-GSL_LDFLAGS=-L/usr/local/Cellar/gsl/1.16/lib -lgsl -lgslcblas -lm
-HDF5_CFLAGS=-I/usr/local/Cellar/hdf5/1.8.15//include
-HDF5_LDFLAGS=-L/usr/local/Cellar/hdf5/1.8.15/lib -L/usr/local/opt/szip/lib -lhdf5_hl -lhdf5 -lsz -lz -ldl -lm
-SQUIDS_CFLAGS=-I/usr/local/include -I/usr/local/Cellar/gsl/1.16/include
-SQUIDS_LDFLAGS=-L/usr/local/lib -L/usr/local/Cellar/gsl/1.16/lib -lSQuIDS -lgsl -lgslcblas -lm
-PHYSTOOLS_LDFLAGS=-lPhysTools
-
-
-INCnuSQUIDS=$(PATH_nuSQUIDS)/inc
-LIBnuSQUIDS=$(PATH_nuSQUIDS)/lib
+GSL_CFLAGS=-I${GSL_2_2}/include
+GSL_LDFLAGS=-L${GSL_2_2}/lib -lgsl -lgslcblas -lm
+HDF5_CFLAGS=-I/usr/include
+HDF5_LDFLAGS=-L/usr/lib64 -lhdf5_hl -lhdf5 -lz -ldl -lm
+SQUIDS_CFLAGS=-I${INCSQUIDS} -I${GSL_2_2}/include
+SQUIDS_LDFLAGS=-L${LIBSQUIDS} -L${GSL_2_2}/lib -lSQuIDS -lgsl -lgslcblas -lm
+PHYSTOOLS_LDFLAGS=-L${PHYSTOOLS}/lib -lPhysTools
+BOOST_LFLAGS=-L${BOOST}/lib
+BOOST_CFLAGS=-I${BOOST}/include
 
 # FLAGS
-CFLAGS= -O3 -fPIC -I$(INCnuSQUIDS) $(SQUIDS_CFLAGS) $(GSL_CFLAGS) $(HDF5_CFLAGS)
+CFLAGS= -std=c99 -O3 -fPIC -I$(INCnuSQUIDS) -I${PHYSTOOLS}/include ${BOOST_CFLAGS} $(SQUIDS_CFLAGS) $(GSL_CFLAGS) $(HDF5_CFLAGS)
 LDFLAGS= -Wl,-rpath -Wl,$(LIBnuSQUIDS) -L$(LIBnuSQUIDS)
-LDFLAGS+= $(SQUIDS_LDFLAGS) $(GSL_LDFLAGS) $(HDF5_LDFLAGS) $(PHYSTOOLS_LDFLAGS)
+LDFLAGS+= $(SQUIDS_LDFLAGS) $(GSL_LDFLAGS) $(PHYSTOOLS_LDFLAGS) $(BOOST_LFLAGS) -lboost_system $(HDF5_LDFLAGS) 
 
 # Compilation rules
 all: $(MAINS)
