@@ -1,7 +1,6 @@
 import numpy as np
 import subprocess
 import emcee
-# TODO(shivesh): MPI business
 from emcee.utils import MPIPool
 import time
 import sys
@@ -61,7 +60,8 @@ print("Initializing walkers")
 ndim = 9
 nwalkers = 200
 # ntemps = 10
-ntemps = 5
+# ntemps = 5
+ntemps = 1
 burnin = 1000
 # burnin = 1
 betas = np.array([1e0,1e-1,1e-2,1e-3,1e-4])
@@ -76,7 +76,8 @@ p0[:,:,-3:] = np.random.uniform(low=[-31, 0, -np.pi], high=[-20, np.pi, np.pi], 
 
 # sampler = emcee.EnsembleSampler(nwalkers, ndim, lnprob)
 # sampler = emcee.PTSampler(ntemps, nwalkers, ndim, llhCPP, lnprior, betas=betas)
-sampler = emcee.PTSampler(ntemps, nwalkers, ndim, llhCPP, lnprior)
+# sampler = emcee.PTSampler(ntemps, nwalkers, ndim, llhCPP, lnprior)
+sampler = emcee.PTSampler(ntemps, nwalkers, ndim, llhCPP, lnprior, threads=8)
 print("Running burn-in")
 # pos, prob, state = sampler.run_mcmc(p0, 10000)
 for result in tqdm.tqdm(sampler.sample(p0, iterations=burnin), total=burnin):
@@ -105,7 +106,7 @@ print sampler.acceptance_fraction
 print np.unique(samples[:,0]).shape
 
 # np.savetxt("chain_new_full.dat",samples)
-# np.save("chain_new_full",samples)
+np.save("chain_full_ntemps0",samples)
 
 print 'Making plot'
 import matplotlib
@@ -113,5 +114,5 @@ matplotlib.use('Agg')
 import corner
 #fig = corner.corner(samples, labels=["$log(ReC_{\mu\tau})$", "$log(ImagC_{\mu\tau})$", "$log(C_{\mu\mu})$"])
 fig = corner.corner(samples)
-fig.savefig("/data/icecube/software/LVTools_package/LVTools/python/triangle_full_new.png")
+fig.savefig("/data/icecube/software/LVTools_package/LVTools/python/triangle_full_ntemps0.png")
 print 'DONE!'

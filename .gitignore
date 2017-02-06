@@ -3,3 +3,4 @@ python/output_*
 python/build
 *.so
 *.o
+*.npy
