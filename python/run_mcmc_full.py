@@ -44,6 +44,8 @@ def lnprior(theta):
     #if -30 < logRCmutau < -23 and -30 < logICmutau < -23 and -30 < logCmumu < -23 \
     #        and 0.1 < normalization < 10 and -0.1 < cosmic_ray_slope < 0.1 and 0.1 < pik < 2.0 and 0 < prompt_norm < 10. and 0 < astro_norm < 10. and -0.5 <astro_gamma < 0.5:
         return 0.0
+    if 0 < normalization < 5 and -1 < cosmic_ray_slope < 1 and 0 < pik < 2.0 and 0 < prompt_norm < 100. and 0 < astro_norm < 100. and -1 <astro_gamma < 1:
+        return 0.0
     return -np.inf
 
 def lnprob(theta):
@@ -62,7 +64,8 @@ nwalkers = 200
 # ntemps = 10
 # ntemps = 5
 ntemps = 1
-burnin = 1000
+# burnin = 1000
+burnin = 100
 # burnin = 1
 betas = np.array([1e0,1e-1,1e-2,1e-3,1e-4])
 # p0_base = [1.,0.,1.,1.,1.,0.,-28,0,0]
@@ -85,7 +88,8 @@ for result in tqdm.tqdm(sampler.sample(p0, iterations=burnin), total=burnin):
 sampler.reset()
 # nsteps = 100000
 # nsteps = 50000
-nsteps = 10000
+# nsteps = 10000
+nsteps = 1000
 # nsteps = 100
 width = 30
 # sampler.run_mcmc(pos,500) #regular run
