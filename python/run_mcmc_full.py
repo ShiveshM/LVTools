@@ -39,12 +39,13 @@ def llhCPP(theta):
  
 def lnprior(theta):
     normalization, cosmic_ray_slope, pik, prompt_norm, astro_norm, astro_gamma, rad, the, phi = theta
-    if -31 < rad < -20 and 0 < the < np.pi and -np.pi < phi < np.pi:
     # if -30 < logRCmutau < -23 and -30 < logICmutau < -23 and -30 < logCmumu < -23 :
     #if -30 < logRCmutau < -23 and -30 < logICmutau < -23 and -30 < logCmumu < -23 \
     #        and 0.1 < normalization < 10 and -0.1 < cosmic_ray_slope < 0.1 and 0.1 < pik < 2.0 and 0 < prompt_norm < 10. and 0 < astro_norm < 10. and -0.5 <astro_gamma < 0.5:
-        return 0.0
-    if 0 < normalization < 5 and -1 < cosmic_ray_slope < 1 and 0 < pik < 2.0 and 0 < prompt_norm < 100. and 0 < astro_norm < 100. and -1 <astro_gamma < 1:
+    if -31 < rad < -20 and 0 < the < np.pi and -np.pi < phi < np.pi and \
+       0 < normalization < 5 and -1 < cosmic_ray_slope < 1 and \
+       0 < pik < 2.0 and 0 < prompt_norm < 100. and 0 < astro_norm < 100. and \
+       -1 <astro_gamma < 1:
         return 0.0
     return -np.inf
 
@@ -110,7 +111,7 @@ print sampler.acceptance_fraction
 print np.unique(samples[:,0]).shape
 
 # np.savetxt("chain_new_full.dat",samples)
-np.save("chain_full_ntemps0",samples)
+np.save("chain_full_nan",samples)
 
 print 'Making plot'
 import matplotlib
@@ -118,5 +119,5 @@ matplotlib.use('Agg')
 import corner
 #fig = corner.corner(samples, labels=["$log(ReC_{\mu\tau})$", "$log(ImagC_{\mu\tau})$", "$log(C_{\mu\mu})$"])
 fig = corner.corner(samples)
-fig.savefig("/data/icecube/software/LVTools_package/LVTools/python/triangle_full_ntemps0.png")
+fig.savefig("/data/icecube/software/LVTools_package/LVTools/python/triangle_full_nan.png")
 print 'DONE!'
