@@ -13,13 +13,22 @@ terms = {
     r't': (-34, -24)
 }
 
-this = r'a'
+this = r't'
 mini = np.float128('1e'+str(terms[this][0]))
 maxi = np.float128('1e'+str(terms[this][1]))
 
-print 'loading '+this+' data'
+# print 'loading '+this+' data'
+# data = []
+# data = from_file('./'+this+'/data.hdf5')['data']
+# print 'done loading data'
+
+prefix = '{0}/output_'.format(this)
 data = []
-data = from_file('./'+this+'/data.hdf5')['data']
+print 'loading data'
+for x in xrange(100):
+    filename = prefix + str(x+1) + '.txt'
+    data.append(np.genfromtxt(filename))
+data = np.vstack(data)
 print 'done loading data'
 
 argmin = np.argmin(data[:,9])
@@ -45,11 +54,13 @@ for x in xrange(n):
 
 import itertools
 # fig = plt.figure(figsize=(34, 17))
-fig = plt.figure(figsize=(12, 10))
-gs = gridspec.GridSpec(3, 3)
+# fig = plt.figure(figsize=(12, 10))
+fig = plt.figure(figsize=(4, 4))
+n_bins = 1
+gs = gridspec.GridSpec(int(np.sqrt(n_bins)), int(np.sqrt(n_bins)))
 gs.update(hspace=0.01, wspace=0.01)
-fig.text(0.5, 0.05, r'${\rm Re}('+this+r'_{\mu\tau})\:({\rm GeV})$', ha='center')
-fig.text(0.06, 0.5, r'${\rm Im}('+this+r'_{\mu\tau})\:({\rm GeV})$', va='center', rotation='vertical')
+fig.text(0.5, 0.01, r'${\rm Re}('+this+r'_{\mu\tau})\:({\rm GeV})$', ha='center')
+fig.text(0.001, 0.5, r'${\rm Im}('+this+r'_{\mu\tau})\:({\rm GeV})$', va='center', rotation='vertical')
 if this == r'a':
     indexes = np.array([15, 30, 50, 75, 95, 115, 150, 170, 185])
     indexes *= 2
@@ -57,6 +68,7 @@ if this == r'c':
     indexes = np.array([15, 30, 50, 75, 95, 115, 150, 170, 185])
 if this == r't':
     indexes = np.array([30, 50, 75, 85, 95, 105, 115, 150, 170])
+indexes = np.array([95])
 n = 0
 for idx, array in enumerate(sep_arrays):
     if idx not in indexes:
@@ -89,51 +101,47 @@ for idx, array in enumerate(sep_arrays):
     xticks = ax.xaxis.get_major_ticks()
     yticks = ax.yaxis.get_major_ticks()
     # if idx % 20 != 0:
-    if n % 3 != 0:
-        [y.set_visible(False) for y in yticks]
-    else:
-        yticks[len(yticks) / 2].set_visible(False)
-    # if idx - 180 < 0:
-    if n - 6 < 0:
-        [x.set_visible(False) for x in xticks]
-    else:
-        xticks[len(xticks) / 2].set_visible(False)
+    # if n % 3 != 0:
+    #     [y.set_visible(False) for y in yticks]
+    # else:
+    #     yticks[len(yticks) / 2].set_visible(False)
+    # # if idx - 180 < 0:
+    # if n - 6 < 0:
+    #     [x.set_visible(False) for x in xticks]
+    # else:
+    #     xticks[len(xticks) / 2].set_visible(False)
+    yticks[len(yticks) / 2].set_visible(False)
+    xticks[len(xticks) / 2].set_visible(False)
 
-    if n == 3:
-	if (len(yticks) / 2) + 3 < len(yticks):
-	    yticks[(len(yticks) / 2) + 3].set_visible(False)
-        if (len(yticks) / 2) - 3 >= 0:
-	    yticks[(len(yticks) / 2) - 3].set_visible(False)
-    elif n == 7:
-	if (len(xticks) / 2) + 3 < len(xticks):
-	    xticks[(len(xticks) / 2) + 3].set_visible(False)
-        if (len(xticks) / 2) - 3 >= 0:
-	    xticks[(len(xticks) / 2) - 3].set_visible(False)
+    # if n == 3:
+	# if (len(yticks) / 2) + 3 < len(yticks):
+	    # yticks[(len(yticks) / 2) + 3].set_visible(False)
+    #     if (len(yticks) / 2) - 3 >= 0:
+	    # yticks[(len(yticks) / 2) - 3].set_visible(False)
+    # elif n == 7:
+	# if (len(xticks) / 2) + 3 < len(xticks):
+	    # xticks[(len(xticks) / 2) + 3].set_visible(False)
+    #     if (len(xticks) / 2) - 3 >= 0:
+	    # xticks[(len(xticks) / 2) - 3].set_visible(False)
 
     for ymaj in ax.yaxis.get_majorticklocs():
         ax.axhline(y=ymaj, ls=':', color='gray', alpha=0.7, linewidth=0.2)
     for xmaj in ax.xaxis.get_majorticklocs():
         ax.axvline(x=xmaj, ls=':', color='gray', alpha=0.7, linewidth=0.2)
 
-    if this == r'a':
-	ax.scatter(data_99_percent[6], data_99_percent[7], c='blue', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.3)
-	ax.scatter(data_90_percent[6], data_90_percent[7], c='red', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.3)
-    elif this == r'c':
-	ax.scatter(data_99_percent[6], data_99_percent[7], c='blue', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.6)
-	ax.scatter(data_90_percent[6], data_90_percent[7], c='red', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.6)
-    elif this == r't':
-	ax.scatter(data_99_percent[6], data_99_percent[7], c='blue', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.7)
-	ax.scatter(data_90_percent[6], data_90_percent[7], c='red', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.7)
-    if any(reduced_llh == 0):
-        bf = array.T[reduced_llh == 0].T
-        ax.scatter(bf[6], bf[7], c='yellow', marker='*', alpha=1, linewidths=0.2, edgecolors='black', s=100)
+    ax.scatter(data_99_percent[6], data_99_percent[7], c='blue', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.6)
+    ax.scatter(data_90_percent[6], data_90_percent[7], c='red', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.6)
+    # if any(reduced_llh == 0):
+    #     bf = array.T[reduced_llh == 0].T
+    #     ax.scatter(bf[6], bf[7], c='yellow', marker='*', alpha=1, linewidths=0.2, edgecolors='black', s=100)
 
-    caption = r'$'+this+r'_{\mu\mu}= '+r'{0:.2E}'.format(array[8][0]).replace(r'E', r'\times 10^{')+r'}\:{\rm GeV}$'
-    at = AnchoredText(caption, prop=dict(size=7), frameon=True, loc=10)
-    at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
-    ax.add_artist(at)
+    # caption = r'$'+this+r'_{\mu\mu}= '+r'{0:.2E}'.format(array[8][0]).replace(r'E', r'\times 10^{')+r'}\:{\rm GeV}$'
+    # at = AnchoredText(caption, prop=dict(size=7), frameon=True, loc=10)
+    # at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
+    # ax.add_artist(at)
     n = n + 1
 
 # fig.savefig('test.png', bbox_inches='tight', dpi=150)
-fig.savefig('condensed_'+this+'.pdf', bbox_inches='tight', dpi=150)
+fig.savefig('condensed_'+this+'.png', bbox_inches='tight', dpi=150)
+fig.savefig('condensed_'+this+'.eps', bbox_inches='tight', dpi=150)
 print 'done'
