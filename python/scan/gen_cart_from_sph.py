@@ -12,7 +12,9 @@ def main(runs, this):
     terms = {
 	r'a': (-27, -18),
 	r'c': (-30, -23),
-	r't': (-34, -24)
+	r't': (-34, -24),
+	r'g': (-38, -27),
+	r's': (-42, -30)
     }
 
     ls = mp.linspace(terms[this][0], terms[this][1], runs)

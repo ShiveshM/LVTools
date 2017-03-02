@@ -3,7 +3,7 @@ unset module;
 
 set -e
 
-this="a";
+this="s";
 n=100;
 
 python gen_cart_from_sph.py --this $this --runs $n
