@@ -29,7 +29,7 @@ else:
         r'test': (-30, -23)
     }
 
-this = r'g_s'
+this = r's_s'
 string = this[0]
 
 if linear:
@@ -135,15 +135,15 @@ n_bins = 1
 gs = gridspec.GridSpec(int(np.sqrt(n_bins)), int(np.sqrt(n_bins)))
 gs.update(hspace=0.01, wspace=0.01)
 if this == r'a_s':
-    fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'$', ha='center')
-elif this == r'c_s':
     fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV})$', ha='center')
+elif this == r'c_s':
+    fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'$', ha='center')
 elif this == r't_s':
-    fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^2)$', ha='center')
+    fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^{-1})$', ha='center')
 elif this == r'g_s':
-    fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^3)$', ha='center')
+    fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^{-2})$', ha='center')
 elif this == r's_s':
-    fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^4)$', ha='center')
+    fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^{-3})$', ha='center')
 fig.text(0.05, 0.5, r'$\theta_{0}/\pi$'.format(string), va='center', rotation='vertical')
 bbox_props = dict(boxstyle="round", fc="w", ec="0.5", lw=0.5, alpha=0.9)
 fig.text(0.217, 0.82, r'Allowed', color='green', fontsize=16, ha='center', va='center')
