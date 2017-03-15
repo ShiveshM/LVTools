@@ -295,11 +295,11 @@ private:
   const unsigned int number_of_years = 2;
   const unsigned int histogramDims[3] = {neutrinoEnergyBins, cosZenithBins, energyProxyBins};
   const double minFitEnergy = 4.0e2;
-  const double maxFitEnergy = 1.8e4;
-  maxFitEnergy *= 1 + 0.2;
-  // maxFitEnergy *= 1 - 0.2;
-  // maxFitEnergy *= 1 + 0.5;
-  // maxFitEnergy *= 1 - 0.5;
+  // const double maxFitEnergy = 1.8e4;
+  const double maxFitEnergy = 1.8e4 * (1 + 0.2);
+  // const double maxFitEnergy = 1.8e4 * (1 - 0.2);
+  // const double maxFitEnergy = 1.8e4 * (1 + 0.5);
+  // const double maxFitEnergy = 1.8e4 * (1 - 0.5);
   // const double maxFitEnergy = 1.0e6;
   const double minCosth = -1;
   const double maxCosth = 0.2;
