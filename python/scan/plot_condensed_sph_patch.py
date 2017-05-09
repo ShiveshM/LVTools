@@ -1,14 +1,24 @@
 import mpmath as mp
 import numpy as np
+import matplotlib as mpl
+mpl.use('Agg')
 from matplotlib import pyplot as plt
 import matplotlib.transforms as mtransforms
 import matplotlib.gridspec as gridspec
 from matplotlib.offsetbox import AnchoredText
+from matplotlib.ticker import MultipleLocator, FormatStrFormatter
+import matplotlib.patches as patches
 from scipy.spatial import ConvexHull
 from scipy.interpolate import splev, splprep
 
 from pisa.utils.fileio import to_file
 from pisa.utils.fileio import from_file
+
+mpl.rcParams['text.usetex'] = True
+mpl.rcParams['text.latex.unicode'] = True
+mpl.rcParams['mathtext.rm'] = 'Computer Modern'
+mpl.rcParams['mathtext.it'] = 'Computer Modern:italic'
+mpl.rcParams['mathtext.bf'] = 'Computer Modern:bold'
 
 mp.mp.dps = 35  # Computation precision is 35 digits
 
@@ -24,13 +34,38 @@ else:
         r'c_s': (-28, -24),
         r't_s': (-33, -26),
         r'c_s_nm': (-30, -23),
-	r'g_s': (-37, -29),
+        r'g_s': (-37, -29),
 	r's_s': (-42, -30),
-        r'test': (-30, -23)
+	r'j_s': (-46, -33),
+        r'test': (-30, -23),
+        r'c_plus20': (-28, -24),
+        r'c_neg20': (-28, -24),
+        r'a_plus50': (-25, -18),
+        r'a_neg50': (-25, -18),
+        r't_plus50': (-33, -26),
+        r't_neg50': (-33, -26),
+        r'a_s_cos': (-25, -18),
+        r'c_s_cos': (-28, -24),
+        r't_s_cos': (-32, -26),
+        r'g_s_cos': (-37, -29),
+        r's_s_cos': (-41, -31),
+        r'j_s_cos': (-45, -34),
     }
 
-this = r's_s'
-string = this[0]
+exclude_lowe = True
+this = r'a_s_cos'
+if this == r'a_s' or this == r'a_s_cos':
+    string = '3'
+elif this == r'c_s' or this == r'c_s_cos':
+    string = '4'
+elif this == r't_s' or this == r't_s_cos':
+    string = '5'
+elif this == r'g_s' or this == r'g_s_cos':
+    string = '6'
+elif this == r's_s' or this == r's_s_cos':
+    string = '7'
+elif this == r'j_s' or this == r'j_s_cos':
+    string = '8'
 
 if linear:
     mini = terms[this][0]
@@ -126,7 +161,7 @@ print 'sep_arrays', len(sep_arrays)
 import itertools
 # fig = plt.figure(figsize=(34, 17))
 # fig = plt.figure(figsize=(12, 10))
-fig = plt.figure(figsize=(6, 4))
+fig = plt.figure(figsize=(5, 4))
 resolution = 50 # the number of vertices
 
 # n_bins = 100
@@ -134,34 +169,73 @@ resolution = 50 # the number of vertices
 n_bins = 1
 gs = gridspec.GridSpec(int(np.sqrt(n_bins)), int(np.sqrt(n_bins)))
 gs.update(hspace=0.01, wspace=0.01)
-if this == r'a_s':
-    fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV})$', ha='center')
-elif this == r'c_s':
-    fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'$', ha='center')
-elif this == r't_s':
-    fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^{-1})$', ha='center')
-elif this == r'g_s':
-    fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^{-2})$', ha='center')
-elif this == r's_s':
-    fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^{-3})$', ha='center')
-fig.text(0.05, 0.5, r'$\theta_{0}/\pi$'.format(string), va='center', rotation='vertical')
+if this == r'a_s' or this == r'a_s_cos':
+    fig.text(0.5, 0.00, r'$\rho_{0}'.format(string)+r'\:({\rm GeV})$', ha='center', fontsize=14)
+if this == r'a_plus50':
+    fig.text(0.5, 0.00, r'$\rho_{0}'.format(string)+r'\:({\rm GeV})$', ha='center', fontsize=14)
+if this == r'a_neg50':
+    fig.text(0.5, 0.00, r'$\rho_{0}'.format(string)+r'\:({\rm GeV})$', ha='center', fontsize=14)
+elif this == r'c_s' or this == r'c_s_cos':
+    fig.text(0.5, 0.00, r'$\rho_{0}'.format(string)+r'$', ha='center', fontsize=14)
+elif this == r'c_plus20':
+    fig.text(0.5, 0.00, r'$\rho_{0}'.format(string)+r'$', ha='center', fontsize=14)
+elif this == r'c_neg20':
+    fig.text(0.5, 0.00, r'$\rho_{0}'.format(string)+r'$', ha='center', fontsize=14)
+elif this == r't_s' or this == r't_s_cos':
+    fig.text(0.5, 0.00, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^{-1})$', ha='center', fontsize=14)
+elif this == r't_plus50':
+    fig.text(0.5, 0.00, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^{-1})$', ha='center', fontsize=14)
+elif this == r't_neg50':
+    fig.text(0.5, 0.00, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^{-1})$', ha='center', fontsize=14)
+elif this == r'g_s' or this == r'g_s_cos':
+    fig.text(0.5, 0.00, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^{-2})$', ha='center', fontsize=14)
+elif this == r's_s' or this == r's_s_cos':
+    fig.text(0.5, 0.00, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^{-3})$', ha='center', fontsize=14)
+elif this == r'j_s' or this == r'j_s_cos':
+    fig.text(0.5, 0.00, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^{-4})$', ha='center', fontsize=14)
+if 'cos' not in this:
+    fig.text(0.00, 0.5, r'$\theta_{0}$'.format(string), va='center', rotation='vertical', fontsize=14)
+else:
+    fig.text(0.00, 0.5, r'$cos(\theta_{0})$'.format(string), va='center', rotation='vertical', fontsize=14)
 bbox_props = dict(boxstyle="round", fc="w", ec="0.5", lw=0.5, alpha=0.9)
-fig.text(0.217, 0.82, r'Allowed', color='green', fontsize=16, ha='center', va='center')
-if this == r'a_s':
-    fig.text(0.45, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
+fig.text(0.21, 0.84, r'Allowed', color='green', fontsize=18, ha='center', va='center')
+if this == r'a_s' or this == r'a_s_cos':
+    fig.text(0.45, 0.5, r'Excluded', color='red', fontsize=18, bbox=bbox_props,
              ha='center', va='center')
-elif this == r'c_s':
-    fig.text(0.58, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
+if this == r'a_plus50':
+    fig.text(0.45, 0.5, r'Excluded', color='red', fontsize=18, bbox=bbox_props,
              ha='center', va='center')
-elif this == r't_s':
-    fig.text(0.48, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
+if this == r'a_neg50':
+    fig.text(0.45, 0.5, r'Excluded', color='red', fontsize=18, bbox=bbox_props,
              ha='center', va='center')
-elif this == r'g_s':
-    fig.text(0.48, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
+elif this == r'c_s' or this == r'c_s_cos':
+    fig.text(0.55, 0.5, r'Excluded', color='red', fontsize=18, bbox=bbox_props,
              ha='center', va='center')
-elif this == r's_s':
-    fig.text(0.48, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
+elif this == r'c_plus20':
+    fig.text(0.5, 0.5, r'Excluded', color='red', fontsize=18, bbox=bbox_props,
              ha='center', va='center')
+elif this == r'c_neg20':
+    fig.text(0.58, 0.5, r'Excluded', color='red', fontsize=18, bbox=bbox_props,
+             ha='center', va='center')
+elif this == r't_s' or this == r't_s_cos':
+    fig.text(0.5, 0.5, r'Excluded', color='red', fontsize=18, bbox=bbox_props,
+             ha='center', va='center')
+elif this == r't_plus50':
+    fig.text(0.5, 0.5, r'Excluded', color='red', fontsize=18, bbox=bbox_props,
+             ha='center', va='center')
+elif this == r't_neg50':
+    fig.text(0.5, 0.5, r'Excluded', color='red', fontsize=18, bbox=bbox_props,
+             ha='center', va='center')
+elif this == r'g_s' or this == r'g_s_cos':
+    fig.text(0.47, 0.5, r'Excluded', color='red', fontsize=18, bbox=bbox_props,
+             ha='center', va='center')
+elif this == r's_s' or this == r's_s_cos':
+    fig.text(0.54, 0.5, r'Excluded', color='red', fontsize=18, bbox=bbox_props,
+             ha='center', va='center')
+elif this == r'j_s' or this == r'j_s_cos':
+    fig.text(0.54, 0.5, r'Excluded', color='red', fontsize=18, bbox=bbox_props,
+             ha='center', va='center')
+
 s = 0
 # indexes = np.array([7, 15, 25, 37, 47, 57, 75, 85, 92])
 indexes = np.array([47])
@@ -187,13 +261,25 @@ for idx, array in enumerate(sep_arrays):
 
     if not linear:
         ax.set_xscale('log')
-    ax.tick_params(axis='x', labelsize=7)
-    ax.tick_params(axis='y', labelsize=7)
+    ax.tick_params(axis='x', labelsize=9)
+    ax.tick_params(axis='y', labelsize=9)
 
     # do ratios
-    lim=map(np.float128, (mini, maxi))
-    ax.set_xlim(lim)
-    ax.set_ylim(0, 1)
+    mini, maxi = map(np.float128, (mini, maxi))
+    nof_ticks = np.log10(maxi)-np.log10(mini)+1
+    major_ticks = np.logspace(np.log10(mini), np.log10(maxi), nof_ticks)
+    minor_ticks = []
+    for idx in xrange(nof_ticks - 1):
+        minor_ticks += np.linspace(major_ticks[idx], major_ticks[idx+1], 11).tolist()
+    ax.set_xticks(major_ticks)
+    ax.set_xticks(minor_ticks, minor=True)
+    ax.xaxis.set_minor_formatter(FormatStrFormatter(""))
+    ax.set_xlim((mini, maxi))
+
+    if 'cos' not in this:
+        ax.set_ylim(0, 1)
+    else:
+        ax.set_ylim(-1, 1)
     # ax.set_ylim(0, np.pi)
     # ax.set_ylim(-np.pi, np.pi)
 
@@ -228,10 +314,18 @@ for idx, array in enumerate(sep_arrays):
         ax.axvline(x=xmaj, ls=':', color='gray', alpha=0.7, linewidth=0.2)
 
     base = 10
-    smoothing = 1e-3
+    if this == r'a_s' or this == r'a_s_cos':
+        smoothing = 1e-4
+    elif this == r'c_s' or this == r'c_s_cos':
+        smoothing = 1e-3
+    else:
+        smoothing = 1e-2
 
     x = data_90_percent[6]
-    y = data_90_percent[7]/np.pi
+    if 'cos' not in this:
+        y = data_90_percent[7]/np.pi
+    else:
+        y = data_90_percent[7]
     uniques = np.unique(np.log(x)/np.log(base))
     bw = np.min(np.diff(uniques))
     print 'bw', bw
@@ -258,12 +352,15 @@ for idx, array in enumerate(sep_arrays):
         try:
             tck, u = splprep([p_x, p_y], s=smoothing, per=True)
             xi, yi = splev(np.linspace(0, 1, 1000), tck)
-            ax.fill(np.power(base, xi), yi, 'r')
+            ax.fill(np.power(base, xi), yi, 'r', edgecolor='k', linewidth=1)
         except:
-            ax.fill(np.power(base, p_x), p_y, 'r')
+            ax.fill(np.power(base, p_x), p_y, 'r', edgecolor='k', linewidth=1)
 
     x = data_99_percent[6]
-    y = data_99_percent[7]/np.pi
+    if 'cos' not in this:
+        y = data_99_percent[7]/np.pi
+    else:
+        y = data_99_percent[7]
     uniques = np.unique(np.log(x)/np.log(base))
     bw = np.min(np.diff(uniques))
     print 'bw', bw
@@ -290,9 +387,9 @@ for idx, array in enumerate(sep_arrays):
         try:
             tck, u = splprep([p_x, p_y], s=smoothing, per=True)
             xi, yi = splev(np.linspace(0, 1, 1000), tck)
-            ax.fill(np.power(base, xi), yi, 'b')
+            ax.fill(np.power(base, xi), yi, 'b', edgecolor='k', linewidth=1)
         except:
-            ax.fill(np.power(base, p_x), p_y, 'b')
+            ax.fill(np.power(base, p_x), p_y, 'b', edgecolor='k', linewidth=1)
 
     # points = np.vstack([np.log10(data_90_percent[6])/np.log10(base), data_90_percent[7]/np.pi]).T
     # print 'points.shape', points.shape
@@ -328,9 +425,33 @@ for idx, array in enumerate(sep_arrays):
     # at = AnchoredText(caption, prop=dict(size=7), frameon=True, loc=10)
     # at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
     # ax.add_artist(at)
+
+    if exclude_lowe:
+        rect = patches.Rectangle((5e-23, -1), 4, 4, linestyle='-',
+                                 linewidth=1, edgecolor='black',
+                                 facecolor='y', alpha=0.5)
+        ax.add_patch(rect)
+        # ax.annotate("",
+        #             xy=(2e-31, 0.50), xycoords='data',
+        #             xytext=(2e-32, 0.50), textcoords='data',
+        #             arrowprops=dict(arrowstyle="->",
+        #                             connectionstyle="arc3"),
+        #             )
+        # ax.annotate("",
+        #             xy=(2e-31, -0.50), xycoords='data',
+        #             xytext=(2e-32, -0.50), textcoords='data',
+        #             arrowprops=dict(arrowstyle="->",
+        #                             connectionstyle="arc3"),
+        #             )
+        fig.text(0.75, 0.8, 'Excluded by DeepCore', color='red', fontsize=10,
+                 bbox=bbox_props, ha='center', va='center')
+
     s = s + 1
 
+if exclude_lowe:
+    this += '_shaded'
 # fig.savefig('test.png', bbox_inches='tight', dpi=150)
 fig.savefig('condensed_sph_patch_'+this+'.png', bbox_inches='tight', dpi=150)
+fig.savefig('condensed_sph_patch_'+this+'.pdf', bbox_inches='tight', dpi=150)
 fig.savefig('condensed_sph_patch_'+this+'.eps', bbox_inches='tight', dpi=150)
 print 'done'

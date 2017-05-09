@@ -14,21 +14,29 @@ def main(runs, this):
 	r'c': (-30, -23),
 	r't': (-34, -24),
 	r'g': (-38, -27),
-	r's': (-42, -30)
+	r's': (-42, -30),
+	r'j': (-46, -33)
     }
 
     ls = mp.linspace(terms[this][0], terms[this][1], runs)
     r = [mp.power(10., x) for x in ls]
-    theta = mp.linspace(0.00001, mp.pi-0.00001, runs)
+    # theta = mp.linspace(0.00001, mp.pi-0.00001, runs)
+    costheta = mp.linspace(-1.0+0.00001, 1.0-0.00001, runs)
     phi = mp.linspace(-mp.pi+0.000001, mp.pi-0.000001, runs)
 
     points = []
     for x in r:
-        for y in theta:
+        # for y in theta:
+        for y in costheta:
             for z in phi:
-                re = x*mp.sin(y)*mp.cos(z)
-                im = x*mp.sin(y)*mp.sin(z)
-                tr = x*mp.cos(y)
+                # re = x*mp.sin(y)*mp.cos(z)
+                # im = x*mp.sin(y)*mp.sin(z)
+                # tr = x*mp.cos(y)
+
+                re = x*mp.sin(mp.acos(y))*mp.cos(z)
+                im = x*mp.sin(mp.acos(y))*mp.sin(z)
+                tr = x*y
+
                 points.append(np.array([re, im, tr]))
     points = np.vstack(points)
 

@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib as mpl
+mpl.use('Agg')
 from matplotlib import pyplot as plt
 import matplotlib.transforms as mtransforms
 import matplotlib.gridspec as gridspec
@@ -7,16 +9,32 @@ from matplotlib.offsetbox import AnchoredText
 from pisa.utils.fileio import to_file
 from pisa.utils.fileio import from_file
 
+mpl.rcParams['text.usetex'] = True
+mpl.rcParams['text.latex.preamble'] = [
+    r'\usepackage{amsmath}',
+    r'\usepackage{amssymb}',
+    r'\usepackage{accents}']
+mpl.rcParams['text.latex.unicode'] = True
+mpl.rcParams['mathtext.rm'] = 'Computer Modern'
+mpl.rcParams['mathtext.it'] = 'Computer Modern:italic'
+mpl.rcParams['mathtext.bf'] = 'Computer Modern:bold'
+
 terms = {
     # r'a': (-27, -18),
     r'a': (-27, -22),
     # r'c': (-30, -23),
     r'c': (-30, -25),
-    # r't': (-34, -24)
-    r't': (-34, -28)
+    # r't': (-34, -24),
+    r't': (-34, -29),
+    # r'g': (-38, -27),
+    r'g': (-38, -33),
+    # r's': (-42, -30),
+    r's': (-42, -37),
+    # r'j': (-46, -33),
+    r'j': (-46, -41),
 }
 
-this = r't'
+this = r'j'
 mini = np.float128('1e'+str(terms[this][0]))
 maxi = np.float128('1e'+str(terms[this][1]))
 
@@ -54,21 +72,30 @@ n_bins = 1
 gs = gridspec.GridSpec(int(np.sqrt(n_bins)), int(np.sqrt(n_bins)))
 gs.update(hspace=0.01, wspace=0.01)
 if this == r'a':
-    fig.text(0.5, 0.01, r'${\rm Re}('+this+r'_{\mu\tau})\:({\rm GeV})$', ha='center')
-    fig.text(0.0001, 0.5, r'${\rm Im}('+this+r'_{\mu\tau})\:({\rm GeV})$', va='center', rotation='vertical')
+    fig.text(0.5, 0.00, r'${\rm Re}(\accentset{\circ}{a}^{(3)}_{\mu\tau})\:({\rm GeV})$', ha='center', fontsize=14)
+    fig.text(-0.04, 0.5, r'${\rm Im}(\accentset{\circ}{a}^{(3)}_{\mu\tau})\:({\rm GeV})$', va='center', rotation='vertical', fontsize=14)
 elif this == r'c':
-    fig.text(0.5, 0.01, r'${\rm Re}('+this+r'_{\mu\tau})$', ha='center')
-    fig.text(0.0001, 0.5, r'${\rm Im}('+this+r'_{\mu\tau})$', va='center', rotation='vertical')
+    fig.text(0.5, 0.00, r'${\rm Re}(\accentset{\circ}{c}^{(4)}_{\mu\tau})$', ha='center', fontsize=14)
+    fig.text(-0.04, 0.5, r'${\rm Im}(\accentset{\circ}{c}^{(4)}_{\mu\tau})$', va='center', rotation='vertical', fontsize=14)
 elif this == r't':
-    fig.text(0.5, 0.01, r'${\rm Re}('+this+r'_{\mu\tau})\:({\rm GeV}^{-1})$', ha='center')
-    fig.text(0.0001, 0.5, r'${\rm Im}('+this+r'_{\mu\tau})\:({\rm GeV}^{-1})$', va='center', rotation='vertical')
-if this == r'a':
-    indexes = np.array([15, 30, 50, 75, 95, 115, 150, 170, 185])
-    indexes *= 2
-if this == r'c':
-    indexes = np.array([15, 30, 50, 75, 95, 115, 150, 170, 185])
-if this == r't':
-    indexes = np.array([30, 50, 75, 85, 95, 105, 115, 150, 170])
+    fig.text(0.5, 0.00, r'${\rm Re}(\accentset{\circ}{a}^{(5)}_{\mu\tau})\:({\rm GeV}^{-1})$', ha='center', fontsize=14)
+    fig.text(-0.04, 0.5, r'${\rm Im}(\accentset{\circ}{a}^{(5)}_{\mu\tau})\:({\rm GeV}^{-1})$', va='center', rotation='vertical', fontsize=14)
+elif this == r'g':
+    fig.text(0.5, 0.00, r'${\rm Re}(\accentset{\circ}{c}^{(6)}_{\mu\tau})\:({\rm GeV}^{-2})$', ha='center', fontsize=14)
+    fig.text(-0.04, 0.5, r'${\rm Im}(\accentset{\circ}{c}^{(6)}_{\mu\tau})\:({\rm GeV}^{-2})$', va='center', rotation='vertical', fontsize=14)
+elif this == r's':
+    fig.text(0.5, 0.00, r'${\rm Re}(\accentset{\circ}{a}^{(7)}_{\mu\tau})\:({\rm GeV}^{-3})$', ha='center', fontsize=14)
+    fig.text(-0.04, 0.5, r'${\rm Im}(\accentset{\circ}{a}^{(7)}_{\mu\tau})\:({\rm GeV}^{-3})$', va='center', rotation='vertical', fontsize=14)
+elif this == r'j':
+    fig.text(0.5, 0.00, r'${\rm Re}(\accentset{\circ}{c}^{(8)}_{\mu\tau})\:({\rm GeV}^{-4})$', ha='center', fontsize=14)
+    fig.text(-0.04, 0.5, r'${\rm Im}(\accentset{\circ}{c}^{(8)}_{\mu\tau})\:({\rm GeV}^{-4})$', va='center', rotation='vertical', fontsize=14)
+# if this == r'a':
+#     indexes = np.array([15, 30, 50, 75, 95, 115, 150, 170, 185])
+#     indexes *= 2
+# if this == r't':
+#     indexes = np.array([30, 50, 75, 85, 95, 105, 115, 150, 170])
+# if this == r'c':
+#     indexes = np.array([15, 30, 50, 75, 95, 115, 150, 170, 185])
 indexes = np.array([95])
 n = 0
 for idx, array in enumerate(sep_arrays):
@@ -86,6 +113,7 @@ for idx, array in enumerate(sep_arrays):
 
     base = 10
     smoothing = 1e-3
+    # smoothing = 0
 
     llh_90_percent = (reduced_llh > 6.25)# & (reduced_llh < 11.34)
     data_90_percent = array.T[llh_90_percent].T
@@ -116,9 +144,9 @@ for idx, array in enumerate(sep_arrays):
         try:
             tck, u = splprep([p_x, p_y], s=smoothing, per=True)
             xi, yi = splev(np.linspace(0, 1, 1000), tck)
-            ax.fill(np.power(base, xi), yi, 'b')
+            ax.fill(np.power(base, xi), yi, 'r', edgecolor='k', linewidth=1)
         except:
-            ax.fill(np.power(base, p_x), p_y, 'b')
+            ax.fill(np.power(base, p_x), p_y, 'r', edgecolor='k', linewidth=1)
 
     llh_99_percent = (reduced_llh > 11.34)
     data_99_percent = array.T[llh_99_percent].T
@@ -149,16 +177,35 @@ for idx, array in enumerate(sep_arrays):
         try:
             tck, u = splprep([p_x, p_y], s=smoothing, per=True)
             xi, yi = splev(np.linspace(0, 1, 1000), tck)
-            ax.fill(np.power(base, xi), yi, 'r')
+            ax.fill(np.power(base, xi), yi, 'b', edgecolor='k', linewidth=1)
         except:
-            ax.fill(np.power(base, p_x), p_y, 'r')
+            ax.fill(np.power(base, p_x), p_y, 'b', edgecolor='k', linewidth=1)
+
+    miny_90 = np.min(data_90_percent[7][(data_90_percent[7] > 0)])
+    minmask_90 = (data_90_percent[7] == miny_90)
+    print 'Re min_90', np.min(data_90_percent[6][minmask_90][(data_90_percent[6][minmask_90] > 0)])
+
+    miny_99 = np.min(data_99_percent[7][(data_99_percent[7] > 0)])
+    minmask_99 = (data_99_percent[7] == miny_99)
+    print 'Re min_99', np.min(data_99_percent[6][minmask_99][(data_99_percent[6][minmask_99] > 0)])
+
+    minx_90 = np.min(data_90_percent[6][(data_90_percent[6] > 0)])
+    minmask_90 = (data_90_percent[6] == minx_90)
+    print 'Im min_90', np.min(data_90_percent[7][minmask_90][(data_90_percent[7][minmask_90] > 0)])
+
+    minx_99 = np.min(data_99_percent[6][(data_99_percent[6] > 0)])
+    minmask_99 = (data_99_percent[6] == minx_99)
+    print 'Im min_99', np.min(data_99_percent[7][minmask_99][(data_99_percent[7][minmask_99] > 0)])
+
+    # ax.scatter(data_99_percent[6], data_99_percent[7], c='green', marker='s', alpha=1, linewidths=1, edgecolors='face', s=1.2, zorder=9)
+    # ax.scatter(data_90_percent[6], data_90_percent[7], c='black', marker='s', alpha=1, linewidths=1, edgecolors='face', s=1.2, zorder=10)
 
     # ax.set_xscale('symlog', linthreshx=mini/10., linthreshy=mini/10.)
     # ax.set_yscale('symlog', linthreshx=mini/10., linthreshy=mini/10.)
     ax.set_xscale('log')
     ax.set_yscale('log')
-    ax.tick_params(axis='x', labelsize=7)
-    ax.tick_params(axis='y', labelsize=7)
+    ax.tick_params(axis='x', labelsize=9)
+    ax.tick_params(axis='y', labelsize=9)
 
     # lim=(-maxi, maxi)
     lim=(mini, maxi)
@@ -192,9 +239,9 @@ for idx, array in enumerate(sep_arrays):
 	    # xticks[(len(xticks) / 2) - 3].set_visible(False)
 
     for ymaj in ax.yaxis.get_majorticklocs():
-        ax.axhline(y=ymaj, ls=':', color='gray', alpha=0.7, linewidth=0.2)
+        ax.axhline(y=ymaj, ls=':', color='gray', alpha=0.5, linewidth=0.2)
     for xmaj in ax.xaxis.get_majorticklocs():
-        ax.axvline(x=xmaj, ls=':', color='gray', alpha=0.7, linewidth=0.2)
+        ax.axvline(x=xmaj, ls=':', color='gray', alpha=0.5, linewidth=0.2)
 
     # if any(reduced_llh == 0):
     #     bf = array.T[reduced_llh == 0].T

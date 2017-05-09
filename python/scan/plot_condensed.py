@@ -10,27 +10,30 @@ from pisa.utils.fileio import from_file
 terms = {
     r'a': (-27, -18),
     r'c': (-30, -23),
-    r't': (-34, -24)
+    r't': (-34, -24),
+    r'g': (-38, -27),
+    r's': (-42, -30),
+    r'j': (-46, -33),
 }
 
-this = r'a'
+this = r'j'
 mini = np.float128('1e'+str(terms[this][0]))
 maxi = np.float128('1e'+str(terms[this][1]))
 
-print 'loading '+this+' data'
-data = []
-data = from_file('./'+this+'/data.hdf5')['data']
-print 'done loading data'
-
-# prefix = '{0}/output_'.format(this)
+# print 'loading '+this+' data'
 # data = []
-# print 'loading data'
-# for x in xrange(100):
-#     filename = prefix + str(x+1) + '.txt'
-#     data.append(np.genfromtxt(filename))
-# data = np.vstack(data)
+# data = from_file('./'+this+'/data.hdf5')['data']
 # print 'done loading data'
-# to_file({'data': data}, './'+this+'/data.hdf5')
+
+prefix = '{0}/output_'.format(this)
+data = []
+print 'loading data'
+for x in xrange(100):
+    filename = prefix + str(x+1) + '.txt'
+    data.append(np.genfromtxt(filename))
+data = np.vstack(data)
+print 'done loading data'
+to_file({'data': data}, './'+this+'/data.hdf5')
 
 argmin = np.argmin(data[:,9])
 min_entry = data[argmin,:]
@@ -137,6 +140,14 @@ for idx, array in enumerate(sep_arrays):
     for xmaj in ax.xaxis.get_majorticklocs():
         ax.axvline(x=xmaj, ls=':', color='gray', alpha=0.7, linewidth=0.2)
 
+    miny_90 = np.min(data_90_percent[7][(data_90_percent[7] > 0)])
+    minmask_90 = (data_90_percent[7] == miny_90)
+    print 'min_90', np.min(data_90_percent[6][minmask_90][(data_90_percent[6][minmask_90] > 0)])
+
+    miny_99 = np.min(data_99_percent[7][(data_99_percent[7] > 0)])
+    minmask_99 = (data_99_percent[7] == miny_99)
+    print 'min_99', np.min(data_99_percent[6][minmask_99][(data_99_percent[6][minmask_99] > 0)])
+
     ax.scatter(data_99_percent[6], data_99_percent[7], c='blue', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.6)
     ax.scatter(data_90_percent[6], data_90_percent[7], c='red', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.6)
     # if any(reduced_llh == 0):
@@ -150,6 +161,6 @@ for idx, array in enumerate(sep_arrays):
     n = n + 1
 
 # fig.savefig('test.png', bbox_inches='tight', dpi=150)
-fig.savefig('condensed_'+this+'.png', bbox_inches='tight', dpi=150)
-fig.savefig('condensed_'+this+'.eps', bbox_inches='tight', dpi=150)
+# fig.savefig('condensed_'+this+'.png', bbox_inches='tight', dpi=150)
+# fig.savefig('condensed_'+this+'.eps', bbox_inches='tight', dpi=150)
 print 'done'

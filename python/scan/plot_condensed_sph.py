@@ -24,11 +24,35 @@ else:
         r'c_s_nm': (-30, -23),
 	r'g_s': (-38, -27),
 	r's_s': (-42, -30),
-        r'test': (-30, -23)
+	r'j_s': (-46, -33),
+        r'test': (-30, -23),
+        r'c_plus20': (-28, -24),
+        r'c_neg20': (-28, -24),
+        r'a_plus50': (-25, -18),
+        r'a_neg50': (-25, -18),
+        r't_plus50': (-33, -26),
+        r't_neg50': (-33, -26),
+        r'a_s_cos': (-25, -18),
+        r'c_s_cos': (-28, -24),
+        r't_s_cos': (-33, -26),
+	r'g_s_cos': (-38, -27),
+	r's_s_cos': (-42, -30),
+	r'j_s_cos': (-46, -33),
     }
 
-this = r's_s'
-string = this[0]
+this = r'a_s_cos'
+if this == r'a_s' or this == r'a_s_cos':
+    string = '3'
+elif this == r'c_s' or this == r'c_s_cos':
+    string = '4'
+elif this == r't_s' or this == r't_s_cos':
+    string = '5'
+elif this == r'g_s' or this == r'g_s_cos':
+    string = '6'
+elif this == r's_s' or this == r's_s_cos':
+    string = '7'
+elif this == r'j_s' or this == r'j_s_cos':
+    string = '8'
 
 if linear:
     mini = terms[this][0]
@@ -72,7 +96,10 @@ r = map(
     lambda x, y, z: mp.sqrt(mp.power(x, 2) + mp.power(y, 2) + mp.power(z, 2)),
     data[:,6], data[:,7], data[:,8]
 )
-theta = map(lambda z, r: mp.acos(z / r), data[:,8], r)
+if 'cos' not in this:
+    theta = map(lambda z, r: mp.acos(z / r), data[:,8], r)
+else:
+    costheta = map(lambda z, r: z / r, data[:,8], r)
 phi = map(lambda x, y: mp.atan2(y, x), data[:,6], data[:,7])
 
 # r = np.power(np.square(data[:,6]) + np.square(data[:,7]) + np.square(data[:,8]), 0.5)
@@ -80,7 +107,10 @@ phi = map(lambda x, y: mp.atan2(y, x), data[:,6], data[:,7])
 # phi = np.arctan2(data[:,7], data[:,6])
 
 data[:,6] = r
-data[:,7] = theta
+if 'cos' not in this:
+    data[:,7] = theta
+else:
+    data[:,7] = costheta
 data[:,8] = phi
 
 to_file({'data': data}, './'+this+'/data.pckl')
@@ -130,32 +160,40 @@ fig = plt.figure(figsize=(6, 4))
 n_bins = 1
 gs = gridspec.GridSpec(int(np.sqrt(n_bins)), int(np.sqrt(n_bins)))
 gs.update(hspace=0.01, wspace=0.01)
-if this == r'a_s':
+if this == r'a_s' or this == r'a_s_cos':
     fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'$', ha='center')
-elif this == r'c_s':
+elif this == r'c_s' or this == r'c_s_cos':
     fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV})$', ha='center')
-elif this == r't_s':
+elif this == r't_s' or this == r't_s_cos':
     fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^2)$', ha='center')
-elif this == r'g_s':
+elif this == r'g_s' or this == r'g_s_cos':
     fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^3)$', ha='center')
-elif this == r's_s':
+elif this == r's_s' or this == r's_s_cos':
     fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^4)$', ha='center')
-fig.text(0.05, 0.5, r'$\theta_{0}$'.format(string), va='center', rotation='vertical')
+elif this == r'j_s' or this == r'j_s_cos':
+    fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^5)$', ha='center')
+if 'cos' not in this:
+    fig.text(0.05, 0.5, r'$\theta_{0}$'.format(string), va='center', rotation='vertical')
+else:
+    fig.text(0.05, 0.5, r'$cos(\theta_{0})$'.format(string), va='center', rotation='vertical')
 bbox_props = dict(boxstyle="round", fc="w", ec="0.5", lw=0.5, alpha=0.9)
 fig.text(0.217, 0.82, r'Allowed', color='green', fontsize=16, ha='center', va='center')
-if this == r'a_s':
+if this == r'a_s' or this == r'c_s_cos':
     fig.text(0.55, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
              ha='center', va='center')
-elif this == r'c_s':
+elif this == r'c_s' or this == r'c_s_cos':
     fig.text(0.58, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
              ha='center', va='center')
-elif this == r't_s':
+elif this == r't_s' or this == r't_s_cos':
     fig.text(0.48, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
              ha='center', va='center')
-elif this == r'g_s':
+elif this == r'g_s' or this == r'g_s_cos':
     fig.text(0.48, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
              ha='center', va='center')
-elif this == r's_s':
+elif this == r's_s' or this == r's_s_cos':
+    fig.text(0.48, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
+             ha='center', va='center')
+elif this == r'j_s' or this == r'j_s_cos':
     fig.text(0.48, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
              ha='center', va='center')
 s = 0
@@ -189,7 +227,10 @@ for idx, array in enumerate(sep_arrays):
     # do ratios
     lim=map(np.float128, (mini, maxi))
     ax.set_xlim(lim)
-    ax.set_ylim(0, 1)
+    if 'cos' not in this:
+        ax.set_ylim(0, 1)
+    else:
+        ax.set_ylim(-1, 1)
     # ax.set_ylim(0, np.pi)
     # ax.set_ylim(-np.pi, np.pi)
 
@@ -223,8 +264,12 @@ for idx, array in enumerate(sep_arrays):
     for xmaj in ax.xaxis.get_majorticklocs():
         ax.axvline(x=xmaj, ls=':', color='gray', alpha=0.7, linewidth=0.2)
 
-    ax.scatter(data_99_percent[6], data_99_percent[7]/np.pi, c='blue', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.6)
-    ax.scatter(data_90_percent[6], data_90_percent[7]/np.pi, c='red', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.6)
+    if 'cos' not in this:
+        ax.scatter(data_99_percent[6], data_99_percent[7]/np.pi, c='blue', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.6)
+        ax.scatter(data_90_percent[6], data_90_percent[7]/np.pi, c='red', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.6)
+    else:
+        ax.scatter(data_99_percent[6], data_99_percent[7], c='blue', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.6)
+        ax.scatter(data_90_percent[6], data_90_percent[7], c='red', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.6)
     if any(reduced_llh == 0):
         bf = array.T[reduced_llh == 0].T
         ax.scatter(bf[6], bf[7], c='yellow', marker='*', alpha=1, linewidths=0.2, edgecolors='black', s=100)
