@@ -50,6 +50,8 @@ if __name__ == '__main__':
         lvsearch.SetEnergyExponent(3.)
     elif args.this == 's':
         lvsearch.SetEnergyExponent(4.)
+    elif args.this == 'j':
+        lvsearch.SetEnergyExponent(5.)
     lvsearch.SetVerbose(False)
 
     # #calculate likelihood from c++

@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     # constructing object
     lvsearch = lv.LVSearch(effective_area_path,events_path,chris_flux_path,kaon_flux_path,pion_flux_path,prompt_flux_path)
-    lvsearch.SetEnergyExponent(2.)
+    lvsearch.SetEnergyExponent(5.)
     lvsearch.SetVerbose(False)
 
     # #calculate likelihood from c++
