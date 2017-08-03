@@ -7,16 +7,27 @@ from matplotlib.offsetbox import AnchoredText
 from pisa.utils.fileio import to_file
 from pisa.utils.fileio import from_file
 
+# terms = {
+#     r'a': (-27, -18),
+#     r'c': (-33, -28),
+#     r't': (-34, -24),
+#     r'g': (-38, -27),
+#     r's': (-42, -30),
+#     # r'j': (-46, -33),
+#     r'j': (-49, -42),
+# }
+
+# pretty superk
 terms = {
-    r'a': (-27, -18),
-    r'c': (-30, -23),
-    r't': (-34, -24),
-    r'g': (-38, -27),
-    r's': (-42, -30),
-    r'j': (-46, -33),
+    r'a': (-27, -22),
+    r'c': (-31, -26),
+    r't': (-35, -30),
+    r'g': (-39, -34),
+    r's': (-43, -38),
+    r'j': (-47, -42),
 }
 
-this = r'j'
+this = r'c'
 mini = np.float128('1e'+str(terms[this][0]))
 maxi = np.float128('1e'+str(terms[this][1]))
 
@@ -25,7 +36,7 @@ maxi = np.float128('1e'+str(terms[this][1]))
 # data = from_file('./'+this+'/data.hdf5')['data']
 # print 'done loading data'
 
-prefix = '{0}/output_'.format(this)
+prefix = 'pretty/{0}/output_'.format(this)
 data = []
 print 'loading data'
 for x in xrange(100):
@@ -33,7 +44,7 @@ for x in xrange(100):
     data.append(np.genfromtxt(filename))
 data = np.vstack(data)
 print 'done loading data'
-to_file({'data': data}, './'+this+'/data.hdf5')
+to_file({'data': data}, 'pretty/'+this+'/data.hdf5')
 
 argmin = np.argmin(data[:,9])
 min_entry = data[argmin,:]

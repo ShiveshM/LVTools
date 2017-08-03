@@ -17,7 +17,7 @@ pion_flux_path='/data/icecube/software/LVTools/data/pion_flux.h5'
 prompt_flux_path='/data/icecube/software/LVTools/data/prompt_flux.h5'
 output_file_path='/data/icecube/software/LVTools_package/LVTools/python/scan/output_'
 
-this = r'j'
+this = r'g'
 
 # constructing object
 lvsearch = lv.LVSearch(effective_area_path,events_path,chris_flux_path,kaon_flux_path,pion_flux_path,prompt_flux_path)
@@ -36,9 +36,11 @@ if this == r'j':
 lvsearch.SetVerbose(False)
 
 terms = {
-    r'a': (-25, -18),
-    r'c': (-28, -24),
-    r't': (-33, -26),
+    r'a': (-27, -18),
+    # r'c': (-28, -24),
+    r'c': (-32, -25),
+    # r't': (-33, -26),
+    r't': (-36, -26),
     r'g': (-38, -27),
     r's': (-42, -30),
     r'j': (-46, -33),
@@ -68,13 +70,14 @@ def llhCPP(theta):
 def lnprior(theta):
     # normalization, cosmic_ray_slope, pik, prompt_norm, astro_norm, astro_gamma, rad, the, phi = theta
     normalization, cosmic_ray_slope, pik, prompt_norm, astro_norm, astro_gamma, rad, costhe, phi = theta
+    ranges = terms[this]
 
     # if -30 < logRCmutau < -23 and -30 < logICmutau < -23 and -30 < logCmumu < -23 :
     #if -30 < logRCmutau < -23 and -30 < logICmutau < -23 and -30 < logCmumu < -23 \
     #        and 0.1 < normalization < 10 and -0.1 < cosmic_ray_slope < 0.1 and 0.1 < pik < 2.0 and 0 < prompt_norm < 10. and 0 < astro_norm < 10. and -0.5 <astro_gamma < 0.5:
 
     # if -31 < rad < -20 and 0 < the < np.pi and -np.pi < phi < np.pi and \
-    if -31 < rad < -20 and -1 < costhe < 1 and -np.pi < phi < np.pi and \
+    if ranges[0] < rad < ranges[1] and -1 < costhe < 1 and -np.pi < phi < np.pi and \
        0 < normalization < 5 and -1 < cosmic_ray_slope < 1 and \
        0 < pik < 2.0 and 0 < prompt_norm < 100. and 0 < astro_norm < 100. and \
        -1 <astro_gamma < 1:
@@ -124,7 +127,7 @@ sampler.reset()
 # nsteps = 100000
 # nsteps = 50000
 # nsteps = 10000
-nsteps = 1000
+nsteps = 10000
 # nsteps = 100
 width = 30
 # sampler.run_mcmc(pos,500) #regular run
@@ -145,7 +148,7 @@ print sampler.acceptance_fraction
 print np.unique(samples[:,0]).shape
 
 # np.savetxt("chain_new_full.dat",samples)
-np.save("chain_full_8",samples)
+np.save("chain_full_3_lowEcut",samples)
 
 # print 'Making plot'
 # import matplotlib

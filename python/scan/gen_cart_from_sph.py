@@ -18,6 +18,16 @@ def main(runs, this):
 	r'j': (-46, -33)
     }
 
+    # # epilogue
+    # terms = {
+	# r'a': (-28, -21),
+	# r'c': (-32, -25),
+	# r't': (-36, -29),
+	# r'g': (-40, -33),
+	# r's': (-44, -37),
+	# r'j': (-48, -41)
+    # }
+
     ls = mp.linspace(terms[this][0], terms[this][1], runs)
     r = [mp.power(10., x) for x in ls]
     # theta = mp.linspace(0.00001, mp.pi-0.00001, runs)

@@ -294,8 +294,10 @@ private:
   const unsigned int energyProxyBins = 50;
   const unsigned int number_of_years = 2;
   const unsigned int histogramDims[3] = {neutrinoEnergyBins, cosZenithBins, energyProxyBins};
-  const double minFitEnergy = 4.0e2;
+  // const double minFitEnergy = 4.0e2;
+  const double minFitEnergy = 8.0e2; // lowE cut - the first 4 bins
   const double maxFitEnergy = 1.8e4;
+  // const double maxFitEnergy = 2e3;
   // const double maxFitEnergy = 1.8e4 * (1 + 0.2);
   // const double maxFitEnergy = 1.8e4 * (1 - 0.2);
   // const double maxFitEnergy = 1.8e4 * (1 + 0.5);
@@ -303,6 +305,9 @@ private:
   // const double maxFitEnergy = 1.0e6;
   const double minCosth = -1;
   const double maxCosth = 0.2;
+  const double minYear = 2010;
+  // const double maxYear = 2011;
+  const double maxYear = 2010;
 
   // evaluation
   size_t evalThreads=1;
@@ -399,6 +404,8 @@ protected:
     data_hist.getAxis(0)->setUpperLimit(maxFitEnergy);
     data_hist.getAxis(1)->setLowerLimit(minCosth);
     data_hist.getAxis(1)->setUpperLimit(maxCosth);
+    data_hist.getAxis(2)->setLowerLimit(minYear);
+    data_hist.getAxis(2)->setUpperLimit(maxYear);
 
     // fill in the histogram with the data
     bin(observed_events, data_hist, binner);
@@ -409,6 +416,11 @@ protected:
       auto itc=static_cast<likelihood::entryStoringBin<std::reference_wrapper<const Event>>>(*it);
       event_number+=itc.size();
     }
+
+    // for(auto it=data_hist.begin(); it != data_hist.end(); it++){
+    //   auto itc=static_cast<likelihood::entryStoringBin<std::reference_wrapper<const Event>>>(*it);
+    //   std::cout << it.getBinEdge(0) << " " << it.getBinEdge(1)  << " " << itc.size() << std::endl;
+    // }
 
     if(fill_bins == 0)
       throw std::runtime_error("No events loaded. Are you sure you are using the right event file/format?");

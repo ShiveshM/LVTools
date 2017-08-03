@@ -38,20 +38,30 @@ else:
 	r'g_s_cos': (-38, -27),
 	r's_s_cos': (-42, -30),
 	r'j_s_cos': (-46, -33),
+        r'c_s_cos_lowecut': (-28, -24),
+        r'c_s_cos_2TeV': (-28, -24),
+	r'g_s_cos_2TeV': (-38, -27),
+	r'j_s_cos_2TeV': (-46, -33),
+        r'lowE_cut/a_s': (-28, -21),
+        r'lowE_cut/c_s': (-32, -25),
+        r'lowE_cut/t_s': (-36, -29),
+        r'lowE_cut/g_s': (-40, -33),
+        r'lowE_cut/s_s': (-44, -37),
+        r'lowE_cut/j_s': (-48, -41),
     }
 
-this = r'a_s_cos'
-if this == r'a_s' or this == r'a_s_cos':
+this = r'lowE_cut/t_s'
+if this == r'a_s' or this == r'a_s_cos' or this == r'lowE_cut/a_s':
     string = '3'
-elif this == r'c_s' or this == r'c_s_cos':
+elif this == r'c_s' or this == r'c_s_cos' or this == r'c_s_cos_lowecut' or this == r'c_s_cos_2TeV' or this == r'lowE_cut/c_s':
     string = '4'
-elif this == r't_s' or this == r't_s_cos':
+elif this == r't_s' or this == r't_s_cos' or this == r'lowE_cut/t_s':
     string = '5'
-elif this == r'g_s' or this == r'g_s_cos':
+elif this == r'g_s' or this == r'g_s_cos' or this == r'g_s_cos_lowecut' or this == r'g_s_cos_2TeV' or this == r'lowE_cut/g_s':
     string = '6'
-elif this == r's_s' or this == r's_s_cos':
+elif this == r's_s' or this == r's_s_cos' or this == r'lowE_cut/s_s':
     string = '7'
-elif this == r'j_s' or this == r'j_s_cos':
+elif this == r'j_s' or this == r'j_s_cos' or this == r'j_s_cos_2TeV' or this == r'lowE_cut/j_s':
     string = '8'
 
 if linear:
@@ -96,7 +106,7 @@ r = map(
     lambda x, y, z: mp.sqrt(mp.power(x, 2) + mp.power(y, 2) + mp.power(z, 2)),
     data[:,6], data[:,7], data[:,8]
 )
-if 'cos' not in this:
+if 'cos' not in this and 'lowE_cut' not in this:
     theta = map(lambda z, r: mp.acos(z / r), data[:,8], r)
 else:
     costheta = map(lambda z, r: z / r, data[:,8], r)
@@ -107,13 +117,14 @@ phi = map(lambda x, y: mp.atan2(y, x), data[:,6], data[:,7])
 # phi = np.arctan2(data[:,7], data[:,6])
 
 data[:,6] = r
-if 'cos' not in this:
+if 'cos' not in this and 'lowE_cut' not in this:
     data[:,7] = theta
 else:
     data[:,7] = costheta
 data[:,8] = phi
 
 to_file({'data': data}, './'+this+'/data.pckl')
+assert 0
 
 # data = from_file('./'+this+'/data.pckl')['data']
 
@@ -162,38 +173,38 @@ gs = gridspec.GridSpec(int(np.sqrt(n_bins)), int(np.sqrt(n_bins)))
 gs.update(hspace=0.01, wspace=0.01)
 if this == r'a_s' or this == r'a_s_cos':
     fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'$', ha='center')
-elif this == r'c_s' or this == r'c_s_cos':
+elif this == r'c_s' or this == r'c_s_cos' or this == r'c_s_cos_2TeV':
     fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV})$', ha='center')
 elif this == r't_s' or this == r't_s_cos':
     fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^2)$', ha='center')
-elif this == r'g_s' or this == r'g_s_cos':
+elif this == r'g_s' or this == r'g_s_cos' or this == r'g_s_cos_lowecut' or this == r'g_s_cos_2TeV':
     fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^3)$', ha='center')
 elif this == r's_s' or this == r's_s_cos':
     fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^4)$', ha='center')
-elif this == r'j_s' or this == r'j_s_cos':
+elif this == r'j_s' or this == r'j_s_cos' or this == r'j_s_cos_2TeV':
     fig.text(0.5, 0.01, r'$\rho_{0}'.format(string)+r'\:({\rm GeV}^5)$', ha='center')
-if 'cos' not in this:
+if 'cos' not in this and 'lowE_cut' not in this:
     fig.text(0.05, 0.5, r'$\theta_{0}$'.format(string), va='center', rotation='vertical')
 else:
     fig.text(0.05, 0.5, r'$cos(\theta_{0})$'.format(string), va='center', rotation='vertical')
 bbox_props = dict(boxstyle="round", fc="w", ec="0.5", lw=0.5, alpha=0.9)
 fig.text(0.217, 0.82, r'Allowed', color='green', fontsize=16, ha='center', va='center')
-if this == r'a_s' or this == r'c_s_cos':
+if this == r'a_s' or this == r'c_s_cos' or this == r'c_s_cos_2TeV':
     fig.text(0.55, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
              ha='center', va='center')
-elif this == r'c_s' or this == r'c_s_cos':
+elif this == r'c_s' or this == r'c_s_cos' or this == r'c_s_cos_2TeV':
     fig.text(0.58, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
              ha='center', va='center')
 elif this == r't_s' or this == r't_s_cos':
     fig.text(0.48, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
              ha='center', va='center')
-elif this == r'g_s' or this == r'g_s_cos':
+elif this == r'g_s' or this == r'g_s_cos' or this == r'g_s_cos_lowecut' or this == r'g_s_cos_2TeV':
     fig.text(0.48, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
              ha='center', va='center')
 elif this == r's_s' or this == r's_s_cos':
     fig.text(0.48, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
              ha='center', va='center')
-elif this == r'j_s' or this == r'j_s_cos':
+elif this == r'j_s' or this == r'j_s_cos' or this == r'j_s_cos_2TeV':
     fig.text(0.48, 0.5, r'Excluded', color='red', fontsize=16, bbox=bbox_props,
              ha='center', va='center')
 s = 0
@@ -227,7 +238,7 @@ for idx, array in enumerate(sep_arrays):
     # do ratios
     lim=map(np.float128, (mini, maxi))
     ax.set_xlim(lim)
-    if 'cos' not in this:
+    if 'cos' not in this and 'lowE_cut' not in this:
         ax.set_ylim(0, 1)
     else:
         ax.set_ylim(-1, 1)
@@ -264,7 +275,7 @@ for idx, array in enumerate(sep_arrays):
     for xmaj in ax.xaxis.get_majorticklocs():
         ax.axvline(x=xmaj, ls=':', color='gray', alpha=0.7, linewidth=0.2)
 
-    if 'cos' not in this:
+    if 'cos' not in this and 'lowE_cut' not in this:
         ax.scatter(data_99_percent[6], data_99_percent[7]/np.pi, c='blue', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.6)
         ax.scatter(data_90_percent[6], data_90_percent[7]/np.pi, c='red', marker='s', alpha=1, linewidths=0, edgecolors='face', s=0.6)
     else:

@@ -37,11 +37,11 @@ if __name__ == '__main__':
     kaon_flux_path='/data/icecube/software/LVTools/data/kaon_flux.h5'
     pion_flux_path='/data/icecube/software/LVTools/data/pion_flux.h5'
     prompt_flux_path='/data/icecube/software/LVTools/data/prompt_flux.h5'
-    output_file_path='/data/icecube/software/LVTools_package/LVTools/python/scan/pretty/j/output_'
+    output_file_path='/data/icecube/software/LVTools_package/LVTools/python/scan/lowE_cut/a/output_'
 
     # constructing object
     lvsearch = lv.LVSearch(effective_area_path,events_path,chris_flux_path,kaon_flux_path,pion_flux_path,prompt_flux_path)
-    lvsearch.SetEnergyExponent(5.)
+    lvsearch.SetEnergyExponent(0.)
     lvsearch.SetVerbose(False)
 
     # #calculate likelihood from c++
