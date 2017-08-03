@@ -294,8 +294,8 @@ private:
   const unsigned int energyProxyBins = 50;
   const unsigned int number_of_years = 2;
   const unsigned int histogramDims[3] = {neutrinoEnergyBins, cosZenithBins, energyProxyBins};
-  // const double minFitEnergy = 4.0e2;
-  const double minFitEnergy = 8.0e2; // lowE cut - the first 4 bins
+  const double minFitEnergy = 4.0e2;
+  // const double minFitEnergy = 8.0e2; // lowE cut - the first 4 bins
   const double maxFitEnergy = 1.8e4;
   // const double maxFitEnergy = 2e3;
   // const double maxFitEnergy = 1.8e4 * (1 + 0.2);
