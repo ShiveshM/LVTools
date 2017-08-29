@@ -31,7 +31,7 @@ CXXFLAGS= -g -std=c++11 -I./inc
 GSL_CFLAGS=-I${GSL_2_2}/include
 GSL_LDFLAGS=-L${GSL_2_2}/lib -lgsl -lgslcblas -lm
 HDF5_CFLAGS=-I/usr/include
-HDF5_LDFLAGS=-L${ANA_LIB} -lhdf5_hl -lhdf5 -lz -ldl -lm
+HDF5_LDFLAGS=-L${ANACONDA}/lib -lhdf5_hl -lhdf5 -lz -ldl -lm
 SQUIDS_CFLAGS=-I${INCSQUIDS} -I${GSL_2_2}/include
 SQUIDS_LDFLAGS=-L${LIBSQUIDS} -L${GSL_2_2}/lib -lSQuIDS -lgsl -lgslcblas -lm
 PHYSTOOLS_LDFLAGS=-L${PHYSTOOLS}/lib -lPhysTools

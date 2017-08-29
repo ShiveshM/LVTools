@@ -306,8 +306,8 @@ private:
   const double minCosth = -1;
   const double maxCosth = 0.2;
   const double minYear = 2010;
-  // const double maxYear = 2011;
-  const double maxYear = 2010;
+  const double maxYear = 2011;
+  // const double maxYear = 2010;
 
   // evaluation
   size_t evalThreads=1;
