@@ -11,12 +11,16 @@ if sys.platform == 'win32' or sys.platform == 'win64':
 
 else:
     try:
+        golem_build_path = os.environ['GOLEMBUILDPATH']
+    except KeyError:
+        golem_build_path = "/usr/local/"
+    try:
         COOLCVMFSROOT=os.environ['SROOT']
     except KeyError:
         COOLCVMFSROOT= "/usr/local/"
-    include_dirs = [COOLCVMFSROOT+"/include",
+    include_dirs = [golem_build_path+"/include",COOLCVMFSROOT+"/include",
                     numpy.get_include(),
-                    '/usr/local/include',
+                    # '/usr/local/include',
                     '../inc/',
                     '.']
     libraries = ['python2.7','boost_python',
@@ -29,14 +33,15 @@ else:
     if sys.platform.startswith('linux'):
       libraries.append('supc++')#'cxxrt'
 
-    library_dirs = ['/usr/local/Cellar/python/2.7.9/Frameworks/Python.framework/Versions/2.7/lib/python2.7',
-                    '/usr/local/Cellar/python/2.7.9/Frameworks/Python.framework/Versions/2.7/lib/python2.7/../',
-                    '/usr/local/lib',
-                    '/usr/local/lib',
-                    '/usr/local/Cellar/gsl/1.15/lib',
-                    '/usr/local/opt/szip/lib',
-                    '/usr/local/lib',
-                    '/usr/local/lib','/home/carguelles/programs/SNOT/local/lib',
+    library_dirs = [golem_build_path+"/lib", golem_build_path+"/lib64",
+        # '/usr/local/Cellar/python/2.7.9/Frameworks/Python.framework/Versions/2.7/lib/python2.7',
+                    # '/usr/local/Cellar/python/2.7.9/Frameworks/Python.framework/Versions/2.7/lib/python2.7/../',
+                    # '/usr/local/lib',
+                    # '/usr/local/lib',
+                    # '/usr/local/Cellar/gsl/1.15/lib',
+                    # '/usr/local/opt/szip/lib',
+                    # '/usr/local/lib',
+                    # '/usr/local/lib','/home/carguelles/programs/SNOT/local/lib',
                     COOLCVMFSROOT+"/lib",COOLCVMFSROOT+"/lib64"]
 
 files = ['lvsearchpy.cpp']

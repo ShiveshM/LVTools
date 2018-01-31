@@ -4,46 +4,70 @@
 #AR=ar
 #LD=clang++
 
-DYN_SUFFIX=.dylib
-DYN_OPT=-dynamiclib -install_name $(LIBnuSQUIDS)/$(DYN_PRODUCT) -compatibility_version $(VERSION) -current_version $(VERSION)
+# DYN_SUFFIX=.dylib
+# DYN_OPT=-dynamiclib -install_name $(LIBnuSQUIDS)/$(DYN_PRODUCT) -compatibility_version $(VERSION) -current_version $(VERSION)
 
-VERSION=1.0.0
+# VERSION=1.0.0
 #PREFIX=/usr/local
 
 
 #PATH_nuSQUIDS=$(shell pwd)
-PATH_nuSQUIDS=/usr/local
-PATH_SQUIDS=$(SQUIDS_DIR)
+# PATH_nuSQUIDS=/usr/local
+# PATH_SQUIDS=$(SQUIDS_DIR)
 
 MAINS_SRC=$(wildcard mains/*.cpp)
 MAINS=$(patsubst mains/%.cpp,bin/%.exe,$(MAINS_SRC))
 #$(EXAMPLES_SRC:.cpp=.exe)
 
-CXXFLAGS= -g -std=c++11 -I./inc -I${PREFIX}/include
+CXXFLAGS= -g -fPIC -std=c++11 -I./inc -I${PREFIX}/include
+CXXFLAGS+=-O3
 
+ifeq (${PREFIX},)
+PREFIX=/usr/local
+endif
+
+ifeq (${SROOT},)
+SROOT=/usr/local
+endif
 CXXFLAGS+=-I${SROOT}/include
 LDFLAGS+=-L${SROOT}/lib
 LDFLAGS+=-L${SROOT}/lib64
 
-# Directories
+ifeq (${GOLEMBUILDPATH},)
+GOLEMBUILDPATH=/usr/local
+endif
+CXXFLAGS+=-I${GOLEMBUILDPATH}/include/
+LDFLAGS+=-L${GOLEMBUILDPATH}/lib/
 
-GSL_CFLAGS=-I/usr/local/Cellar/gsl/1.16/include
-GSL_LDFLAGS=-L/usr/local/Cellar/gsl/1.16/lib -lgsl -lgslcblas -lm
-HDF5_CFLAGS=-I/usr/local/Cellar/hdf5/1.8.15//include
-#HDF5_LDFLAGS=-L/usr/local/Cellar/hdf5/1.8.15/lib -L/usr/local/opt/szip/lib -lhdf5_hl -lhdf5 -lsz -lz -ldl -lm
-HDF5_LDFLAGS=-L/usr/local/Cellar/hdf5/1.8.15/lib -L/usr/local/opt/szip/lib -lhdf5_hl -lhdf5 -lz -ldl -lm
-SQUIDS_CFLAGS=-I/usr/local/include -I/usr/local/Cellar/gsl/1.16/include
-SQUIDS_LDFLAGS=-L/usr/local/lib -L/usr/local/Cellar/gsl/1.16/lib -lSQuIDS -lgsl -lgslcblas -lm
-PHYSTOOLS_LDFLAGS=-lPhysTools
+# # Directories
+# GSL_CFLAGS=-I/usr/local/Cellar/gsl/1.16/include
+# GSL_LDFLAGS=-L/usr/local/Cellar/gsl/1.16/lib -lgsl -lgslcblas -lm
+# HDF5_CFLAGS=-I/usr/local/Cellar/hdf5/1.8.15//include
+# #HDF5_LDFLAGS=-L/usr/local/Cellar/hdf5/1.8.15/lib -L/usr/local/opt/szip/lib -lhdf5_hl -lhdf5 -lsz -lz -ldl -lm
+# HDF5_LDFLAGS=-L/usr/local/Cellar/hdf5/1.8.15/lib -L/usr/local/opt/szip/lib -lhdf5_hl -lhdf5 -lz -ldl -lm
+# SQUIDS_CFLAGS=-I/usr/local/include -I/usr/local/Cellar/gsl/1.16/include
+# SQUIDS_LDFLAGS=-L/usr/local/lib -L/usr/local/Cellar/gsl/1.16/lib -lSQuIDS -lgsl -lgslcblas -lm
+# PHYSTOOLS_LDFLAGS=-lPhysTools
 
+LDFLAGS+=-lgsl -lgslcblas -lm
+LDFLAGS+=-lboost_system -lboost_iostreams -lboost_filesystem -lboost_regex
+LDFLAGS+=-lhdf5 -lhdf5_hl
+# the following should be found in the include and lib directories
+# of the SNOTBUILDPATH
+LDFLAGS+=-lNewNuFlux
+LDFLAGS+=-lPhysTools
+LDFLAGS+=-lSQuIDS -lnuSQuIDS
+LDFLAGS+=-lLeptonWeighter
+LDFLAGS+=-lphotospline -lcfitsio
+#LDFLAGS+=-lsupc++
 
-INCnuSQUIDS=$(PATH_nuSQUIDS)/inc
-LIBnuSQUIDS=$(PATH_nuSQUIDS)/lib
+# INCnuSQUIDS=$(PATH_nuSQUIDS)/inc
+# LIBnuSQUIDS=$(PATH_nuSQUIDS)/lib
 
-# FLAGS
-CFLAGS= -O3 -fPIC -I$(INCnuSQUIDS) $(SQUIDS_CFLAGS) $(GSL_CFLAGS) $(HDF5_CFLAGS)
-LDFLAGS+= -Wl,-rpath -Wl,$(LIBnuSQUIDS) -L$(LIBnuSQUIDS) -L${PREFIX}/lib # -lsupc++
-LDFLAGS+= $(SQUIDS_LDFLAGS) $(GSL_LDFLAGS) $(HDF5_LDFLAGS) $(PHYSTOOLS_LDFLAGS)
+# # FLAGS
+# CFLAGS= -O3 -fPIC -I$(INCnuSQUIDS) $(SQUIDS_CFLAGS) $(GSL_CFLAGS) $(HDF5_CFLAGS)
+# LDFLAGS+= -Wl,-rpath -Wl,$(LIBnuSQUIDS) -L$(LIBnuSQUIDS) -L${PREFIX}/lib # -lsupc++
+# LDFLAGS+= $(SQUIDS_LDFLAGS) $(GSL_LDFLAGS) $(HDF5_LDFLAGS) $(PHYSTOOLS_LDFLAGS)
 
 # Compilation rules
 all: $(MAINS)
@@ -55,10 +79,12 @@ bin/%.exe : mains/%.cpp mains/%.o mains/lbfgsb.o mains/linpack.o
 	$(CXX) $(CXXFLAGS) -c $(CFLAGS) $< -o $@
 
 mains/lbfgsb.o : ./inc/lbfgsb/lbfgsb.h ./inc/lbfgsb/lbfgsb.c
-	$(CC) $(CFLAGS) -std=c99 ./inc/lbfgsb/lbfgsb.c -c -o ./mains/lbfgsb.o
+	# $(CC) $(CFLAGS) -std=c99 ./inc/lbfgsb/lbfgsb.c -c -o ./mains/lbfgsb.o
+	$(CC) $(CXXFLAGS) -std=c99 ./inc/lbfgsb/lbfgsb.c -c -o ./mains/lbfgsb.o
 
 mains/linpack.o : ./inc/lbfgsb/linpack.c
-	$(CC) $(CFLAGS) -std=c99 ./inc/lbfgsb/linpack.c -c -o ./mains/linpack.o
+	# $(CC) $(CFLAGS) -std=c99 ./inc/lbfgsb/linpack.c -c -o ./mains/linpack.o
+	$(CC) $(CXXFLAGS) -std=c99 ./inc/lbfgsb/linpack.c -c -o ./mains/linpack.o
 
 .PHONY: clean
 clean:
