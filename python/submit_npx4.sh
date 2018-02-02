@@ -6,9 +6,7 @@
 THISDIR=$(cd $(dirname $0); pwd)
 
 # Path to the executable script
-EXECUTABLE=$THISDIR/run_bayes_evidence.sh
-
-ARGUMENTS='$(Process)'
+EXECUTABLE=$THISDIR/run_mcmc_shivesh.sh
 
 # Input files (comma-separated) to be transferred to the remote host
 # Executable will see them copied in PWD
@@ -27,7 +25,7 @@ OUTDIR=$THISDIR/metaouts/
 # Destination of log, stdout, stderr files
 LOGDIR=$THISDIR/metalogs/
 
-NJOBS=2500
+NJOBS=1
 # NJOBS=10
 
 #LOCALTEST=true
@@ -56,9 +54,10 @@ output = '$LOGDIR'/$(Process).stdout
 error = '$LOGDIR'/$(Process).stderr
 log = '$LOGDIR'/$(Process).log
 initialdir = '$OUTDIR'
-request_memory = 3000
+request_cpus = 20
+request_memory = 1000
 JobNotification = NEVER
-arguments = "'$ARGUMENTS $1'"
 '"$TESTSPEC"'
 queue '$NJOBS | condor_submit
 #queue '$NJOBS | less
+

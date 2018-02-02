@@ -1,5 +1,7 @@
 from __future__ import print_function
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import sys
 import time
 import pymultinest
@@ -8,7 +10,7 @@ from pymultinest.watch import ProgressPrinter
 import lvsearchpy as lv
 
 #paths
-central_data_path = '/home/carguelles/monadas/LVTools/'
+central_data_path = '/data/user/smandalia/GolemTools/sources/LVTools'
 effective_area_path= central_data_path + '/data/effective_area.h5'
 events_path= central_data_path + '/data/simple_corrected_data_release.dat'
 chris_flux_path= central_data_path + '/data/conventional_flux.h5'
@@ -22,7 +24,7 @@ lvsearch.SetVerbose(False)
 lvsearch.SetEnergyExponent(3)
 #lvsearch.SetEnergyExponent(2)
 
-batch_mode = False
+batch_mode = True
 
 if not batch_mode:
     if(len(sys.argv)!=4):
@@ -35,12 +37,14 @@ else:
     if(len(sys.argv)!=2):
         print("wrong number of parameters")
         exit()
-    puntillos = np.genfromtxt('/home/carguelles/monadas/LVTools/scr/lv6_blob_points')
+    puntillos = np.genfromtxt(central_data_path + '/scr/lv6_blob_points')
     model_index = int(sys.argv[1])
 
     RCmutau = puntillos[model_index][1];
     ICmutau = puntillos[model_index][2];
     Cmumu = puntillos[model_index][3];
+
+print('RCmutau, ICmutau, Cmumu', RCmutau, ICmutau, Cmumu)
 
 parameters = ["normalization", "cosmic_ray_slope", "pik", "prompt_norm", "astro_norm", "astro_gamma"]
 #parameters_prior_ranges = [[0.5,3.], [-0.5, 0.5], [0., 2], [0, 10], [0, 10], [-4, 4]]
@@ -80,7 +84,7 @@ a_lnZ = analyzer.get_stats()['global evidence']
 print("end analysis")
 
 if batch_mode:
-    output_location = '/home/carguelles/monadas/LVTools/scr/metaresults/'
+    output_location = central_data_path + '/scr/metaresults/'
     np.savez(output_location+'lv_evidence_'+prefix+'.npy',RCmutau=RCmutau,ICmutau=ICmutau,Cmumu=Cmumu,a_lnZ=a_lnZ)
 print("Evidence ", a_lnZ)
 

@@ -11,8 +11,10 @@ def SphereConvert(rho,costh,phi):
     return CRmumu, CImumu, Cmumu
 
 i = 0
-for rho in rho_range:
-    for costh in costh_range:
-        crmumu,cimumu,cmumu = SphereConvert(rho,costh,0.)
-        print i, crmumu, cimumu, cmumu
-        i = i+1
+with open('lv6_blob_points', 'w') as f:
+    for rho in rho_range:
+        for costh in costh_range:
+            crmumu,cimumu,cmumu = SphereConvert(rho,costh,0.)
+            f.write('{0} {1} {2} {3}\n'.format(i, crmumu, cimumu, cmumu))
+            i = i+1
+

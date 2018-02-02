@@ -1,2 +1,7 @@
 *.o
 python/build/temp.linux-x86_64-2.7/
+meta*
+images
+chains
+*.npz
+*.npy

@@ -1,4 +1,4 @@
 #!/bin/bash
-source /home/carguelles/.bashrc
+source /home/smandalia/.bashrc
 GOLEMSPACE
-python /home/carguelles/monadas/LVTools/python/run_bayes_evidence.py $1
+python /data/user/smandalia/GolemTools/sources/LVTools/python/run_bayes_evidence.py $1
